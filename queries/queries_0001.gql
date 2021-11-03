@@ -1,0 +1,64 @@
+query GET_USER($id: ID!) {
+  user(id: $id) {
+    id
+    firstName
+    lastName
+    indexRef
+    userName
+    createdAt
+    __typename
+  }
+}
+query GET_USERS {
+  users {
+    id
+    firstName
+    lastName
+  }
+}
+
+query GET_POST($id: ID!) {
+  post(id: $id) {
+    id
+    title
+    body
+    createdAt
+    indexRef
+    __typename
+  }
+}
+
+query GET_POSTS {
+  posts {
+    id
+    title
+    body
+  }
+}
+
+fragment post on Post {
+  id
+  body
+  title
+  indexRef
+  __typename
+}
+
+query GET_POSTS($input: ApiFiltersInput) {
+  posts(input: $input) {
+    ...post
+  }
+}
+
+query GET_POSTS(
+  $start: Int
+  $limit: Int
+  $sort: String
+  $order: ApiFiltersOrder
+) {
+  posts(
+    input: { _start: $start, _limit: $limit, _sort: $sort, _order: $order }
+  ) {
+    ...post
+  }
+}
