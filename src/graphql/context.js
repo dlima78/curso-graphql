@@ -1,7 +1,12 @@
 import fetch from 'node-fetch'
-require('dotenv').config()
+import { getPosts } from '../utils/posts'
+import { getUsers } from '../utils/users'
+import { makePostDataLoader } from './post/dataloaders'
+import { makeUserDataLoader } from './user/dataloaders'
 
 export const context = () => ({
-  getUsers: (path = '/') => fetch(`${process.env.API_URL}/users${path}`),
-  getPosts: (path = '/') => fetch(`${process.env.API_URL}/posts${path}`),
+  userDataLoader: makeUserDataLoader(getUsers(fetch)),
+  postDataLoader: makePostDataLoader(getPosts(fetch)),
+  getUsers: getUsers(fetch),
+  getPosts: getPosts(fetch),
 })

@@ -1,32 +1,18 @@
-const post = async (_, { id }, { getPosts }) => {
-  const response = await getPosts(`/${id}`)
-  const post = await response.json()
-
-  if (typeof post.id === undefined) {
-    return {
-      statusCode: 404,
-      message: 'Post not found',
-    }
-  }
+const post = async (_, { id }, { dataSources }) => {
+  const post = dataSources.postApi.getPost(id)
   return post
 }
 
-const posts = async (_, { input }, { getPosts }) => {
-  const apiFiltersInput = new URLSearchParams(input).toString()
-  const response = await getPosts(`/?${apiFiltersInput}`)
-  return response.json()
+const posts = async (_, { input }, { dataSources }) => {
+  const posts = dataSources.postApi.getPosts(input)
+  return posts
+}
+
+const user = async ({ userId }, _, { userDataLoader }) => {
+  return userDataLoader.load(userId)
 }
 
 export const postResolvers = {
-  Query: {
-    post,
-    posts,
-  },
-  PostResult: {
-    __resolveType: (obj) => {
-      if (typeof obj.statuCode !== undefined) return 'PostNotFoundError'
-      if (typeof obj.id !== undefined) return 'Post'
-      return null
-    },
-  },
+  Query: { post, posts },
+  Post: { user },
 }
